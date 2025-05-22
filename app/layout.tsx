@@ -4,6 +4,7 @@ import { Inter } from "next/font/google"
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
 import { MusicPlayer } from "@/components/music-player"
+import { LoadingScreen } from "@/components/loading-screen"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -30,6 +31,7 @@ export default function RootLayout({
       </head>
       <body className={`${inter.className} min-h-screen bg-background japanese-pattern`}>
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem disableTransitionOnChange>
+          <LoadingScreen />
           <div className="uwp-background fixed inset-0 z-[-2]"></div>
           <div className="fog fixed inset-0 z-[-1]"></div>
           {children}

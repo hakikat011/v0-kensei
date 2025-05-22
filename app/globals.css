@@ -69,6 +69,172 @@
   }
 }
 
+/* Loading Screen Animations */
+.samurai-image {
+  animation: samuraiFadeInOut 4s ease-in-out infinite;
+  filter: drop-shadow(0 0 20px rgba(225, 29, 72, 0.3));
+}
+
+@keyframes samuraiFadeInOut {
+  0%,
+  100% {
+    opacity: 0.7;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.95;
+    transform: scale(1.02);
+  }
+}
+
+.samurai-glow {
+  background: radial-gradient(circle at center, rgba(225, 29, 72, 0.2) 0%, rgba(225, 29, 72, 0.1) 40%, transparent 70%);
+  animation: glowPulse 3s ease-in-out infinite;
+  border-radius: 50%;
+}
+
+@keyframes glowPulse {
+  0%,
+  100% {
+    opacity: 0.5;
+    transform: scale(0.9);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.1);
+  }
+}
+
+.samurai-overlay {
+  background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.02) 50%, transparent 70%);
+  animation: shimmer 6s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+  0%,
+  100% {
+    opacity: 0;
+    transform: translateX(-100%);
+  }
+  50% {
+    opacity: 1;
+    transform: translateX(100%);
+  }
+}
+
+.loading-bar-fill {
+  position: relative;
+  overflow: hidden;
+}
+
+.loading-bar-fill::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(to top, transparent, rgba(255, 255, 255, 0.3), transparent);
+  animation: barShimmer 2s ease-in-out infinite;
+}
+
+@keyframes barShimmer {
+  0%,
+  100% {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  50% {
+    transform: translateY(100%);
+    opacity: 1;
+  }
+}
+
+.loading-bar-glow {
+  background: radial-gradient(ellipse at center, rgba(239, 68, 68, 0.3) 0%, transparent 70%);
+  animation: barGlow 2s ease-in-out infinite;
+  border-radius: 50%;
+  transform: scale(1.5);
+}
+
+@keyframes barGlow {
+  0%,
+  100% {
+    opacity: 0.3;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+.floating-particles {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.floating-particles::before,
+.floating-particles::after {
+  content: "";
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  background: rgba(225, 29, 72, 0.6);
+  border-radius: 50%;
+  animation: floatParticles 8s linear infinite;
+}
+
+.floating-particles::before {
+  left: 20%;
+  animation-delay: 0s;
+  animation-duration: 6s;
+}
+
+.floating-particles::after {
+  right: 20%;
+  animation-delay: 3s;
+  animation-duration: 8s;
+}
+
+@keyframes floatParticles {
+  0% {
+    transform: translateY(100vh) scale(0);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+    transform: translateY(90vh) scale(1);
+  }
+  90% {
+    opacity: 1;
+    transform: translateY(10vh) scale(1);
+  }
+  100% {
+    transform: translateY(0) scale(0);
+    opacity: 0;
+  }
+}
+
+/* Add multiple particle effects */
+.floating-particles {
+  background-image: radial-gradient(2px 2px at 20px 30px, rgba(225, 29, 72, 0.3), transparent),
+    radial-gradient(2px 2px at 40px 70px, rgba(225, 29, 72, 0.2), transparent),
+    radial-gradient(1px 1px at 90px 40px, rgba(225, 29, 72, 0.4), transparent),
+    radial-gradient(1px 1px at 130px 80px, rgba(225, 29, 72, 0.2), transparent);
+  background-repeat: repeat;
+  background-size: 200px 100px;
+  animation: particleFloat 20s linear infinite;
+}
+
+@keyframes particleFloat {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(-100px);
+  }
+}
+
 .uwp-background {
   background-image: url("/images/uwp-background.jpeg");
   background-size: cover;
@@ -379,17 +545,17 @@
 @keyframes musicPulse {
   0% {
     transform: scale(1);
-    box-shadow: 0 0 0 0 rgba(var(--primary), 0.7);
+    box-shadow: 0 0 0 0 rgba(225, 29, 72, 0.7);
   }
 
   70% {
     transform: scale(1.05);
-    box-shadow: 0 0 0 10px rgba(var(--primary), 0);
+    box-shadow: 0 0 0 10px rgba(225, 29, 72, 0);
   }
 
   100% {
     transform: scale(1);
-    box-shadow: 0 0 0 0 rgba(var(--primary), 0);
+    box-shadow: 0 0 0 0 rgba(225, 29, 72, 0);
   }
 }
 
@@ -521,7 +687,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zM6 34v-4H4v4H0v2h4v4h2V6h4V4H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
   opacity: 0.1;
   z-index: -1;
 }
@@ -1065,41 +1231,78 @@
 }
 
 .project-modal-close {
-  @apply absolute top-4 right-4 w-10 h-10 flex items-center justify-center rounded-full bg-black/50 text-white/80 hover:bg-black/70 hover:text-white transition-colors z-50;
+  position: absolute;
+  top: 4rem;
+  right: 4rem;
+  width: 10rem;
+  height: 10rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  background-color: rgba(15, 15, 20, 0.8);
+  color: rgba(200, 200, 200, 0.8);
+  border: 1px solid rgba(70, 70, 70, 0.3);
+  transition: all 0.3s ease;
+  z-index: 50;
   backdrop-filter: blur(4px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
 }
 
-.project-modal-header {
-  @apply mb-6;
+.project-modal-close:hover {
+  background-color: rgba(30, 30, 35, 0.9);
+  color: #ffffff;
+  box-shadow: 0 0 15px rgba(50, 50, 50, 0.5);
 }
 
 .project-modal-icon {
-  @apply flex items-center justify-center w-10 h-10 rounded-full bg-blue-900/50 text-blue-400;
-  border: 1px solid rgba(59, 130, 246, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 10rem;
+  height: 10rem;
+  border-radius: 9999px;
+  background-color: rgba(30, 30, 35, 0.6);
+  color: rgba(200, 200, 200, 0.9);
+  border: 1px solid rgba(70, 70, 70, 0.3);
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.4);
 }
 
 .project-modal-category {
-  @apply bg-blue-900/30 text-blue-300 border-blue-700/50 text-xs;
+  background-color: rgba(30, 30, 35, 0.6);
+  color: rgba(200, 200, 200, 0.9);
+  border: 1px solid rgba(70, 70, 70, 0.3);
+  font-family: "Rajdhani", sans-serif;
+  font-size: 0.75rem;
 }
 
 .project-modal-title {
-  @apply text-2xl md:text-3xl font-bold text-white;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
-  font-family: "Cinzel", serif;
+  font-family: "Orbitron", sans-serif;
+  color: #e6e6e6;
+  text-shadow: 0 0 10px rgba(150, 150, 150, 0.3);
   letter-spacing: 1px;
+  font-size: 1.5rem;
+  line-height: 1.2;
+  margin-top: 0.5rem;
 }
 
 .project-modal-body {
-  @apply mb-6;
+  margin-bottom: 6rem;
 }
 
 .project-modal-description {
-  @apply text-blue-100/90 mb-6 leading-relaxed;
+  font-family: "Rajdhani", sans-serif;
+  color: rgba(200, 200, 200, 0.9);
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+  letter-spacing: 0.5px;
 }
 
 .project-modal-technologies {
-  @apply p-4 rounded-lg bg-blue-950/50 border border-blue-900/50;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  background-color: rgba(25, 25, 30, 0.4);
+  border: 1px solid rgba(50, 50, 50, 0.3);
 }
 
 .project-modal-footer {
@@ -1489,445 +1692,13 @@
   box-shadow: 0 0 15px rgba(0, 0, 0, 0.4);
 }
 
-.neo-modal-category {
-  background-color: rgba(30, 30, 35, 0.6);
-  color: rgba(200, 200, 200, 0.9);
-  border: 1px solid rgba(70, 70, 70, 0.3);
-  font-family: "Rajdhani", sans-serif;
-  font-size: 0.75rem;
-}
-
-.neo-modal-title {
-  font-family: "Orbitron", sans-serif;
-  color: #e6e6e6;
-  text-shadow: 0 0 10px rgba(150, 150, 150, 0.3);
-  letter-spacing: 1px;
-  font-size: 1.5rem;
-  line-height: 1.2;
-  margin-top: 0.5rem;
-}
-
-.neo-modal-description {
-  font-family: "Rajdhani", sans-serif;
-  color: rgba(200, 200, 200, 0.9);
-  line-height: 1.6;
-  margin-bottom: 1.5rem;
-  letter-spacing: 0.5px;
-}
-
-.neo-modal-technologies {
-  padding: 1rem;
-  border-radius: 0.5rem;
-  background-color: rgba(25, 25, 30, 0.4);
-  border: 1px solid rgba(50, 50, 50, 0.3);
-}
-
-.neo-tech-badge {
-  background-color: rgba(15, 15, 20, 0.8);
-  color: rgba(200, 200, 200, 0.9);
-  border: 1px solid rgba(70, 70, 70, 0.3);
-  font-family: "Rajdhani", sans-serif;
-  font-size: 0.75rem;
-  transition: all 0.3s ease;
-}
-
-.neo-tech-badge:hover {
-  background-color: rgba(40, 40, 45, 0.6);
-  color: #ffffff;
-}
-
-.neo-button {
-  background-color: rgba(15, 15, 20, 0.8);
-  color: rgba(200, 200, 200, 0.9);
-  border: 1px solid rgba(70, 70, 70, 0.3);
-  font-family: "Rajdhani", sans-serif;
-  font-weight: 600;
-  transition: all 0.3s ease;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
-}
-
-.neo-button:hover {
-  background-color: rgba(40, 40, 45, 0.6);
-  color: #ffffff;
-  border-color: rgba(100, 100, 100, 0.5);
-  box-shadow: 0 0 15px rgba(50, 50, 50, 0.5);
-}
-
-/* Add this to the tailwind extend animations section: */
-
-@keyframes pulse-slow {
-  0%,
-  100% {
-    opacity: 0.1;
-  }
-  50% {
-    opacity: 0.2;
-  }
-}
-
-.animate-pulse-slow {
-  animation: pulse-slow 8s infinite;
-}
-
-.neo-paper-badge {
-  background-color: rgba(6, 182, 212, 0.15);
-  color: rgba(165, 243, 252, 0.9);
-  border: 1px solid rgba(8, 145, 178, 0.4);
-  font-family: "Rajdhani", sans-serif;
-  font-size: 0.7rem;
-  padding: 0.25rem 0.5rem;
-  backdrop-filter: blur(4px);
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
-}
-
-.neo-paper-link {
-  position: relative;
-  padding: 0.5rem 0.75rem;
-  background-color: rgba(8, 145, 178, 0.15);
-  border-radius: 0.25rem;
-  transition: all 0.3s ease;
-  display: inline-flex;
-  align-items: center;
-}
-
-.neo-paper-link:hover {
-  background-color: rgba(8, 145, 178, 0.25);
-  box-shadow: 0 0 15px rgba(6, 182, 212, 0.2);
-}
-
-.neo-paper-link::before {
-  content: "";
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 1px;
-  background: linear-gradient(90deg, rgba(6, 182, 212, 0.4), transparent);
-  transform: scaleX(0);
-  transform-origin: left;
-  transition: transform 0.3s ease;
-}
-
-.neo-paper-link:hover::before {
-  transform: scaleX(1);
-}
-
-/* Neo Skills Section Styling - Dark with Red Accents */
-.neo-skills-section {
-  background-color: #050508;
-  position: relative;
-  overflow: hidden;
-}
-
-.neo-red-gradient-text {
-  background: linear-gradient(90deg, #ff0000, #ff5555);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  text-shadow: 0 0 15px rgba(255, 0, 0, 0.3);
-}
-
-.neo-skill-card {
-  background-color: rgba(10, 10, 15, 0.8);
-  border: 1px solid rgba(50, 50, 50, 0.3);
-  border-radius: 0.5rem;
-  overflow: hidden;
-  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.7);
-  position: relative;
-  backdrop-filter: blur(10px);
-}
-
-.neo-skill-card::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(135deg, rgba(255, 0, 0, 0.05), transparent);
-  opacity: 0;
-  transition: opacity 0.4s ease;
-  z-index: 0;
-  pointer-events: none;
-}
-
-.neo-skill-card:hover::before {
-  opacity: 1;
-}
-
-.neo-card-decoration {
-  position: absolute;
-  top: -20px;
-  right: -20px;
-  width: 80px;
-  height: 80px;
-  background-image: url("/images/samurai-mon.png");
-  background-size: contain;
-  background-repeat: no-repeat;
-  opacity: 0.1;
-  transition: all 0.3s ease;
-  transform: rotate(-10deg);
-}
-
-.neo-skill-card:hover .neo-card-decoration {
-  opacity: 0.2;
-  transform: rotate(0deg);
-}
-
-.neo-skill-category-title {
-  font-family: "Orbitron", sans-serif;
-  color: #e6e6e6;
-  text-shadow: 0 0 10px rgba(150, 150, 150, 0.3);
-  letter-spacing: 1px;
-  position: relative;
-  display: inline-flex;
-  padding-bottom: 0.5rem;
-}
-
-.neo-skill-category-title::after {
-  content: "";
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 1px;
-  background: linear-gradient(90deg, #ff0000, transparent);
-}
-
-.neo-skills-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 1.5rem;
-  position: relative;
-}
-
-.neo-skill-item {
-  position: relative;
-  padding: 0.75rem;
-  border-radius: 0.5rem;
-  background: rgba(20, 20, 25, 0.5);
-  backdrop-filter: blur(4px);
-  transition: all 0.3s ease;
-  border: 1px solid rgba(50, 50, 50, 0.3);
-}
-
-.neo-skill-item:hover {
-  background: rgba(30, 30, 35, 0.6);
-  transform: translateY(-2px);
-  border-color: rgba(255, 0, 0, 0.2);
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-}
-
-.neo-skill-name {
-  font-family: "Orbitron", sans-serif;
-  letter-spacing: 0.5px;
-  font-size: 0.95rem;
-  color: #e6e6e6;
-}
-
-.neo-skill-percentage {
-  font-family: "Rajdhani", sans-serif;
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: #ff3333;
-}
-
-.neo-skill-bar {
-  position: relative;
-  height: 0.625rem;
-  width: 100%;
-  overflow: hidden;
-  border-radius: 9999px;
-  background-color: rgba(30, 30, 35, 0.6);
-  margin-bottom: 0.5rem;
-  box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.5);
-}
-
-.skill-progress {
-  position: absolute;
-  left: 0;
-  top: 0;
-  height: 100%;
-  border-radius: 9999px;
-  background: linear-gradient(90deg, #ff0000, #ff5555);
-  transition: width 1.5s cubic-bezier(0.19, 1, 0.22, 1);
-  position: relative;
-  overflow: hidden;
-  z-index: 2;
-  box-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
-}
-
-.neo-skill-glow {
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 10px;
-  height: 100%;
-  background: rgba(255, 255, 255, 0.8);
-  filter: blur(3px);
-  animation: neoGlowAnimation 2s infinite;
-}
-
-@keyframes neoGlowAnimation {
-  0%,
-  100% {
-    opacity: 0.3;
-  }
-  50% {
-    opacity: 0.8;
-  }
-}
-
-.neo-skill-grid-lines {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 1;
-}
-
-.neo-skill-grid-line {
-  position: absolute;
-  top: 0;
-  height: 100%;
-  width: 1px;
-  background-color: rgba(255, 255, 255, 0.1);
-}
-
-.neo-skill-scale {
-  display: flex;
-  justify-content: space-between;
-  font-size: 0.7rem;
-  color: rgba(200, 200, 200, 0.6);
-  font-family: "Rajdhani", sans-serif;
-}
-
-.neo-tab-text {
-  font-family: "Orbitron", sans-serif;
-  letter-spacing: 0.5px;
-}
-
-/* Contact Section Styling */
-.neo-contact-card {
-  position: relative;
-  transition: all 0.3s ease;
-  overflow: hidden;
-}
-
-.neo-contact-card::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(135deg, rgba(255, 0, 0, 0.05), transparent);
-  opacity: 0;
-  transition: opacity 0.4s ease;
-  z-index: 0;
-  pointer-events: none;
-}
-
-.neo-contact-card:hover::before {
-  opacity: 1;
-}
-
-.neo-social-link {
-  transition: all 0.3s ease;
-  border: 1px solid transparent;
-}
-
-.neo-social-link:hover {
-  background: rgba(20, 20, 25, 0.5);
-  border-color: rgba(255, 0, 0, 0.2);
-  transform: translateX(5px);
-}
-
-/* Particles for contact section */
-.particles-container {
-  overflow: hidden;
-}
-
-.particle {
-  position: absolute;
-  background-color: rgba(255, 255, 255, 0.5);
-  border-radius: 50%;
-  pointer-events: none;
-  opacity: 0;
-  animation: particleFloat 15s linear infinite;
-}
-
-@keyframes particleFloat {
-  0% {
-    transform: translateY(0) rotate(0deg);
+@keyframes neoModalFadeIn {
+  from {
     opacity: 0;
+    transform: translateY(20px) scale(0.95);
   }
-  10% {
-    opacity: 0.5;
-  }
-  90% {
-    opacity: 0.5;
-  }
-  100% {
-    transform: translateY(-100px) rotate(360deg);
-    opacity: 0;
-  }
-}
-
-/* Sword line effect */
-.sword-line {
-  position: absolute;
-  width: 1px;
-  background: linear-gradient(to bottom, rgba(255, 0, 0, 0.5), transparent);
-  animation: swordGlow 4s ease-in-out infinite;
-}
-
-@keyframes swordGlow {
-  0%,
-  100% {
-    opacity: 0.3;
-    box-shadow: 0 0 5px rgba(255, 0, 0, 0.3);
-  }
-  50% {
-    opacity: 0.8;
-    box-shadow: 0 0 15px rgba(255, 0, 0, 0.6);
-  }
-}
-
-.neo-card:focus-visible {
-  outline: 2px solid rgba(225, 29, 72, 0.5);
-  outline-offset: 2px;
-}
-
-.neo-button:focus-visible,
-.tsushima-button:focus-visible,
-.tsushima-nav-link:focus-visible {
-  outline: 2px solid rgba(225, 29, 72, 0.5);
-  outline-offset: 2px;
-}
-
-/* Add a subtle texture overlay to enhance visual depth */
-.section-texture {
-  position: relative;
-}
-
-.section-texture::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4' viewBox='0 0 4 4'%3E%3Cpath fill='%23ffffff' fill-opacity='0.03' d='M1 3h1v1H1V3zm2-2h1v1H3V1z'%3E%3C/path%3E%3C/svg%3E");
-  pointer-events: none;
-  z-index: 1;
-}
-
-/* Improve project card responsiveness at smallest breakpoints */
-@media (max-width: 480px) {
-  .neo-card {
-    height: auto; /* Allow height to adjust based on content */
-    min-height: 340px;
-  }
-
-  .quest-card-modern {
-    height: auto;
-    min-height: 300px;
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
   }
 }

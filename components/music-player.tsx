@@ -1,11 +1,12 @@
 "use client"
 
 import { useState, useEffect, useRef } from "react"
-import { Volume2, VolumeX } from "lucide-react"
+import { Volume2, Music } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 
 export function MusicPlayer() {
-  const [isMuted, setIsMuted] = useState(true) // Start muted by default
+  const [isPlaying, setIsPlaying] = useState(false)
   const [isLoaded, setIsLoaded] = useState(false)
   const audioRef = useRef<HTMLAudioElement | null>(null)
 
@@ -15,16 +16,12 @@ export function MusicPlayer() {
     audio.src = "/audio/jin.mp3"
     audio.loop = true
     audio.preload = "auto"
-    audio.muted = true // Start muted
+    audio.volume = 0.7 // Set a comfortable default volume
     audioRef.current = audio
 
     // Add event listeners
     const handleCanPlay = () => {
       setIsLoaded(true)
-      // Start playing (but muted) once loaded
-      audio.play().catch((error) => {
-        console.log("Autoplay prevented:", error)
-      })
     }
 
     audio.addEventListener("canplaythrough", handleCanPlay)
@@ -40,43 +37,54 @@ export function MusicPlayer() {
     }
   }, [])
 
-  const toggleMute = () => {
+  const toggleAudio = () => {
     if (!audioRef.current || !isLoaded) return
 
     const audio = audioRef.current
 
-    // If currently muted, unmute and ensure playing
-    if (isMuted) {
-      audio.muted = false
-      if (audio.paused) {
-        audio.play().catch((error) => {
-          console.log("Play prevented:", error)
-          // If play fails, keep it muted
-          audio.muted = true
-          setIsMuted(true)
-          return
+    if (!isPlaying) {
+      // Try to play
+      audio
+        .play()
+        .then(() => {
+          setIsPlaying(true)
         })
-      }
+        .catch((error) => {
+          console.log("Play prevented:", error)
+          setIsPlaying(false)
+        })
     } else {
-      // If not muted, mute it
-      audio.muted = true
+      // Pause
+      audio.pause()
+      setIsPlaying(false)
     }
-
-    setIsMuted(!isMuted)
   }
 
   return (
-    <div className="fixed bottom-6 right-6 z-50">
-      <Button
-        variant="ghost"
-        size="icon"
-        className="h-10 w-10 rounded-full bg-background/80 backdrop-blur-sm shadow-lg border border-primary/20 hover:bg-primary/10"
-        onClick={toggleMute}
-        aria-label={isMuted ? "Play music" : "Mute music"}
-        disabled={!isLoaded}
-      >
-        {isMuted ? <VolumeX className="h-5 w-5" /> : <Volume2 className="h-5 w-5" />}
-      </Button>
-    </div>
+    <TooltipProvider>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <div className="fixed bottom-6 right-6 z-50">
+            <Button
+              variant="ghost"
+              size="icon"
+              className={`h-12 w-12 rounded-full backdrop-blur-sm shadow-lg border transition-all duration-300 ${
+                isPlaying
+                  ? "bg-red-500/20 border-red-500/50 hover:bg-red-500/30 music-pulse"
+                  : "bg-background/80 border-primary/20 hover:bg-primary/10"
+              }`}
+              onClick={toggleAudio}
+              aria-label={isPlaying ? "Pause music" : "Play music"}
+              disabled={!isLoaded}
+            >
+              {isPlaying ? <Volume2 className="h-6 w-6" /> : <Music className="h-6 w-6" />}
+            </Button>
+          </div>
+        </TooltipTrigger>
+        <TooltipContent side="left">
+          <p>{isPlaying ? "Pause background music" : "Play background music"}</p>
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
   )
 }
