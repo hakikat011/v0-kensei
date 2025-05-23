@@ -61,6 +61,40 @@ export function LoadingScreen() {
       intervals.push(finalInterval)
     }, 2000)
 
+    // Try to load the video
+    if (videoRef.current) {
+      const video = videoRef.current
+
+      // Set up event handlers
+      const handleCanPlay = () => {
+        setVideoLoaded(true)
+        try {
+          video.play().catch((e) => {
+            console.log("Auto-play prevented:", e)
+            // This is expected in many browsers
+          })
+        } catch (e) {
+          console.log("Play error:", e)
+        }
+      }
+
+      const handleError = (e: Event) => {
+        console.error("Video loading error:", e)
+        setVideoError(true)
+      }
+
+      // Add event listeners
+      video.addEventListener("canplaythrough", handleCanPlay)
+      video.addEventListener("error", handleError)
+
+      // Clean up event listeners
+      return () => {
+        intervals.forEach((interval) => clearInterval(interval))
+        video.removeEventListener("canplaythrough", handleCanPlay)
+        video.removeEventListener("error", handleError)
+      }
+    }
+
     // Cleanup function
     return () => {
       intervals.forEach((interval) => clearInterval(interval))
@@ -78,37 +112,6 @@ export function LoadingScreen() {
     }
   }, [isComplete])
 
-  // Handle video loading
-  useEffect(() => {
-    const video = videoRef.current
-    if (video) {
-      const handleVideoLoaded = () => {
-        setVideoLoaded(true)
-      }
-
-      const handleVideoError = () => {
-        setVideoError(true)
-      }
-
-      const handleCanPlay = () => {
-        setVideoLoaded(true)
-      }
-
-      video.addEventListener("loadeddata", handleVideoLoaded)
-      video.addEventListener("canplay", handleCanPlay)
-      video.addEventListener("error", handleVideoError)
-
-      // Force load the video
-      video.load()
-
-      return () => {
-        video.removeEventListener("loadeddata", handleVideoLoaded)
-        video.removeEventListener("canplay", handleCanPlay)
-        video.removeEventListener("error", handleVideoError)
-      }
-    }
-  }, [])
-
   // When no longer visible, don't render anything
   if (!isVisible && isComplete) return null
 
@@ -118,36 +121,30 @@ export function LoadingScreen() {
         !isVisible ? "opacity-0" : "opacity-100"
       }`}
     >
-      {/* Background */}
+      {/* Background - Try video first, fall back to image */}
       <div className="absolute inset-0 overflow-hidden">
-        {/* Fallback background image */}
+        {!videoError && (
+          <video
+            ref={videoRef}
+            className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ${
+              videoLoaded ? "opacity-100" : "opacity-0"
+            }`}
+            muted
+            loop
+            playsInline
+            src="/videos/silence-of-the-ronin.1920x1080.mp4"
+          />
+        )}
+
+        {/* Background image (shown while video loads or if video fails) */}
         <div
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          className={`absolute inset-0 bg-cover bg-center bg-no-repeat transition-opacity duration-500 ${
+            videoLoaded && !videoError ? "opacity-0" : "opacity-100"
+          }`}
           style={{
             backgroundImage: "url('/images/samurai-background.jpeg')",
           }}
         ></div>
-
-        {/* Video Background */}
-        {!videoError && (
-          <video
-            ref={videoRef}
-            autoPlay
-            loop
-            muted
-            playsInline
-            preload="auto"
-            className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ${
-              videoLoaded ? "opacity-100" : "opacity-0"
-            }`}
-            onLoadedData={() => setVideoLoaded(true)}
-            onCanPlay={() => setVideoLoaded(true)}
-            onError={() => setVideoError(true)}
-          >
-            <source src="/videos/silence-of-the-ronin.1920x1080.mp4" type="video/mp4" />
-            Your browser does not support the video tag.
-          </video>
-        )}
 
         {/* Dark overlay to reduce brightness */}
         <div className="absolute inset-0 bg-black/60 z-[10]"></div>
