@@ -7,6 +7,7 @@ export function LoadingScreen() {
   const [isVisible, setIsVisible] = useState(true)
   const [isComplete, setIsComplete] = useState(false)
   const [videoLoaded, setVideoLoaded] = useState(false)
+  const [videoError, setVideoError] = useState(false)
   const videoRef = useRef<HTMLVideoElement>(null)
 
   useEffect(() => {
@@ -85,10 +86,25 @@ export function LoadingScreen() {
         setVideoLoaded(true)
       }
 
+      const handleVideoError = () => {
+        setVideoError(true)
+      }
+
+      const handleCanPlay = () => {
+        setVideoLoaded(true)
+      }
+
       video.addEventListener("loadeddata", handleVideoLoaded)
+      video.addEventListener("canplay", handleCanPlay)
+      video.addEventListener("error", handleVideoError)
+
+      // Force load the video
+      video.load()
 
       return () => {
         video.removeEventListener("loadeddata", handleVideoLoaded)
+        video.removeEventListener("canplay", handleCanPlay)
+        video.removeEventListener("error", handleVideoError)
       }
     }
   }, [])
@@ -102,20 +118,39 @@ export function LoadingScreen() {
         !isVisible ? "opacity-0" : "opacity-100"
       }`}
     >
-      {/* Video Background */}
+      {/* Background */}
       <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute inset-0 bg-black/70 z-10"></div> {/* Dark overlay to reduce brightness */}
-        <video
-          ref={videoRef}
-          autoPlay
-          loop
-          muted
-          playsInline
-          className="absolute w-full h-full object-cover"
-          style={{ opacity: videoLoaded ? 1 : 0, transition: "opacity 0.5s ease" }}
-        >
-          <source src="/videos/silence-of-the-ronin.1920x1080.mp4" type="video/mp4" />
-        </video>
+        {/* Fallback background image */}
+        <div
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          style={{
+            backgroundImage: "url('/images/samurai-background.jpeg')",
+          }}
+        ></div>
+
+        {/* Video Background */}
+        {!videoError && (
+          <video
+            ref={videoRef}
+            autoPlay
+            loop
+            muted
+            playsInline
+            preload="auto"
+            className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ${
+              videoLoaded ? "opacity-100" : "opacity-0"
+            }`}
+            onLoadedData={() => setVideoLoaded(true)}
+            onCanPlay={() => setVideoLoaded(true)}
+            onError={() => setVideoError(true)}
+          >
+            <source src="/videos/silence-of-the-ronin.1920x1080.mp4" type="video/mp4" />
+            Your browser does not support the video tag.
+          </video>
+        )}
+
+        {/* Dark overlay to reduce brightness */}
+        <div className="absolute inset-0 bg-black/60 z-[10]"></div>
       </div>
 
       {/* Content container */}
