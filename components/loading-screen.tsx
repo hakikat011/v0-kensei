@@ -1,210 +1,85 @@
 "use client"
 
-import { useEffect, useState, useRef } from "react"
+import { useEffect, useState } from "react"
+import Image from "next/image"
+import { motion } from "framer-motion"
 
-export function LoadingScreen() {
+interface LoadingScreenProps {
+  onLoadingComplete: () => void
+}
+
+export function LoadingScreen({ onLoadingComplete }: LoadingScreenProps) {
   const [progress, setProgress] = useState(0)
-  const [isVisible, setIsVisible] = useState(true)
-  const [isComplete, setIsComplete] = useState(false)
-  const [videoLoaded, setVideoLoaded] = useState(false)
-  const [videoError, setVideoError] = useState(false)
-  const videoRef = useRef<HTMLVideoElement>(null)
 
   useEffect(() => {
-    // Simulate realistic loading progress
-    const intervals: NodeJS.Timeout[] = []
-
-    // Initial quick progress
-    const quickInterval = setInterval(() => {
-      setProgress((prev) => {
-        const increment = Math.random() * 8 + 2 // 2-10% increments
-        const newProgress = prev + increment
-        if (newProgress >= 30) {
-          clearInterval(quickInterval)
-          return 30
+    // Simulate loading progress
+    const interval = setInterval(() => {
+      setProgress((prevProgress) => {
+        if (prevProgress >= 100) {
+          clearInterval(interval)
+          setTimeout(() => {
+            onLoadingComplete()
+          }, 500) // Slight delay before hiding
+          return 100
         }
-        return newProgress
+        return prevProgress + Math.floor(Math.random() * 10) + 1
       })
-    }, 150)
-    intervals.push(quickInterval)
+    }, 200)
 
-    // Medium progress phase
-    setTimeout(() => {
-      const mediumInterval = setInterval(() => {
-        setProgress((prev) => {
-          const increment = Math.random() * 5 + 1 // 1-6% increments
-          const newProgress = prev + increment
-          if (newProgress >= 70) {
-            clearInterval(mediumInterval)
-            return 70
-          }
-          return newProgress
-        })
-      }, 300)
-      intervals.push(mediumInterval)
-    }, 800)
-
-    // Final progress phase
-    setTimeout(() => {
-      const finalInterval = setInterval(() => {
-        setProgress((prev) => {
-          const increment = Math.random() * 3 + 0.5 // 0.5-3.5% increments
-          const newProgress = prev + increment
-          if (newProgress >= 100) {
-            clearInterval(finalInterval)
-            setIsComplete(true)
-            return 100
-          }
-          return newProgress
-        })
-      }, 200)
-      intervals.push(finalInterval)
-    }, 2000)
-
-    // Try to load the video
-    if (videoRef.current) {
-      const video = videoRef.current
-
-      // Set up event handlers
-      const handleCanPlay = () => {
-        setVideoLoaded(true)
-        try {
-          video.play().catch((e) => {
-            console.log("Auto-play prevented:", e)
-            // This is expected in many browsers
-          })
-        } catch (e) {
-          console.log("Play error:", e)
-        }
-      }
-
-      const handleError = (e: Event) => {
-        console.error("Video loading error:", e)
-        setVideoError(true)
-      }
-
-      // Add event listeners
-      video.addEventListener("canplaythrough", handleCanPlay)
-      video.addEventListener("error", handleError)
-
-      // Clean up event listeners
-      return () => {
-        intervals.forEach((interval) => clearInterval(interval))
-        video.removeEventListener("canplaythrough", handleCanPlay)
-        video.removeEventListener("error", handleError)
-      }
-    }
-
-    // Cleanup function
-    return () => {
-      intervals.forEach((interval) => clearInterval(interval))
-    }
-  }, [])
-
-  useEffect(() => {
-    if (isComplete) {
-      // Wait a moment after completion, then start fade out
-      const fadeTimeout = setTimeout(() => {
-        setIsVisible(false)
-      }, 500)
-
-      return () => clearTimeout(fadeTimeout)
-    }
-  }, [isComplete])
-
-  // When no longer visible, don't render anything
-  if (!isVisible && isComplete) return null
+    return () => clearInterval(interval)
+  }, [onLoadingComplete])
 
   return (
-    <div
-      className={`fixed inset-0 z-[100] flex flex-col items-center justify-center transition-opacity duration-1000 ${
-        !isVisible ? "opacity-0" : "opacity-100"
-      }`}
+    <motion.div
+      className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-black"
+      initial={{ opacity: 1 }}
+      animate={{ opacity: progress === 100 ? 0 : 1 }}
+      transition={{ duration: 0.5 }}
     >
-      {/* Background - Try video first, fall back to image */}
-      <div className="absolute inset-0 overflow-hidden">
-        {!videoError && (
-          <video
-            ref={videoRef}
-            className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ${
-              videoLoaded ? "opacity-100" : "opacity-0"
-            }`}
-            muted
-            loop
-            playsInline
-            src="/videos/silence-of-the-ronin.1920x1080.mp4"
-          />
-        )}
-
-        {/* Background image (shown while video loads or if video fails) */}
-        <div
-          className={`absolute inset-0 bg-cover bg-center bg-no-repeat transition-opacity duration-500 ${
-            videoLoaded && !videoError ? "opacity-0" : "opacity-100"
-          }`}
-          style={{
-            backgroundImage: "url('/images/samurai-background.jpeg')",
-          }}
-        ></div>
-
-        {/* Dark overlay to reduce brightness */}
-        <div className="absolute inset-0 bg-black/60 z-[10]"></div>
+      <div className="relative w-full h-full">
+        <Image
+          src="/images/samurai-loading.png"
+          alt="Samurai silhouette"
+          fill
+          className="object-contain opacity-20 scale-75" // Added scale-75 to reduce the size
+          priority
+        />
       </div>
 
-      {/* Content container */}
-      <div className="relative z-20 flex flex-col items-center justify-center">
-        {/* Circular loading indicator */}
-        <div className="relative mb-8">
-          <svg className="w-32 h-32" viewBox="0 0 100 100">
-            {/* Background circle */}
-            <circle cx="50" cy="50" r="45" fill="none" stroke="rgba(255, 255, 255, 0.1)" strokeWidth="8" />
+      <div className="absolute flex flex-col items-center">
+        {/* Reduced size of the loading circle */}
+        <div className="relative w-28 h-28 mb-6">
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div className="w-20 h-20 rounded-full bg-red-500/10"></div>
+          </div>
 
-            {/* Progress circle */}
+          {/* Circular progress indicator */}
+          <svg className="absolute inset-0 w-full h-full" viewBox="0 0 100 100">
+            <circle cx="50" cy="50" r="45" fill="none" stroke="#1a1a1a" strokeWidth="8" />
             <circle
               cx="50"
               cy="50"
               r="45"
               fill="none"
-              stroke="rgba(225, 29, 72, 0.8)"
+              stroke="#e11d48"
               strokeWidth="8"
               strokeLinecap="round"
               strokeDasharray="283"
               strokeDashoffset={283 - (283 * progress) / 100}
               transform="rotate(-90 50 50)"
-              style={{
-                transition: "stroke-dashoffset 0.5s ease",
-                filter: "drop-shadow(0 0 8px rgba(225, 29, 72, 0.5))",
-              }}
+              className="transition-all duration-300 ease-out"
             />
-
-            {/* Percentage text */}
-            <text
-              x="50"
-              y="55"
-              textAnchor="middle"
-              dominantBaseline="middle"
-              fill="white"
-              fontSize="16"
-              fontFamily="monospace"
-              fontWeight="bold"
-            >
-              {Math.round(progress)}%
-            </text>
           </svg>
+
+          <div className="absolute inset-0 flex items-center justify-center">
+            <span className="text-xl font-bold text-white font-japanese">{Math.floor(progress)}%</span>
+          </div>
         </div>
 
-        {/* Loading text */}
-        <div className="text-center">
-          <p className="text-gray-300 text-sm font-japanese tracking-wider">
-            {progress < 30
-              ? "Awakening..."
-              : progress < 70
-                ? "Preparing..."
-                : progress < 100
-                  ? "Almost ready..."
-                  : "Ready"}
-          </p>
-        </div>
+        {/* Reduced text size */}
+        <h1 className="text-2xl font-bold text-white tsushima-name mb-2">HAKIKAT SINGH</h1>
+        <p className="text-sm text-gray-400 font-japanese">Loading experience...</p>
       </div>
-    </div>
+    </motion.div>
   )
 }
