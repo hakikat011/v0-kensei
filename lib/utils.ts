@@ -5,17 +5,16 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
-// Add debounce function for scroll events
 export function debounce<T extends (...args: any[]) => any>(func: T, wait: number): (...args: Parameters<T>) => void {
-  let timeout: ReturnType<typeof setTimeout> | null = null
+  let timeout: NodeJS.Timeout | null = null
 
   return (...args: Parameters<T>) => {
-    const later = () => {
-      timeout = null
-      func(...args)
+    if (timeout) {
+      clearTimeout(timeout)
     }
 
-    if (timeout) clearTimeout(timeout)
-    timeout = setTimeout(later, wait)
+    timeout = setTimeout(() => {
+      func(...args)
+    }, wait)
   }
 }
